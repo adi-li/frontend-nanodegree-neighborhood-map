@@ -1,0 +1,112 @@
+html,
+body {
+	height: 100%;
+	margin: 0;
+	padding: 0;
+	font-family: 'Open Sans', sans-serif;
+}
+
+header {
+	background-color: #444;
+	padding: 1.5% 0;
+	height: 5%;
+}
+
+.btn {
+	cursor: pointer;
+	border: none;
+    background-color: transparent;
+    background-image: none;
+}
+
+/* page layout */
+.locations-list {
+	width: 400px;
+	float: left;
+	background-color: #333;
+	z-index: 1;
+}
+
+.map-view,
+.locations-list {
+	height: 100%;
+}
+
+.map {
+	height: 90%;
+}
+
+/* side bar */
+.locations-list h2 {
+	text-align: center;
+	color: #eee;
+}
+
+.location-filter {
+	height: 50px;
+	width: 98%;
+	border: none;
+    padding: 0 2.5%;
+    color: #222;
+    font-size: 16px;
+    margin: 0 1%;
+}
+
+.locations-list ul {
+	list-style-type: none;
+    -webkit-padding-start: 0;
+    padding-start: 0; 
+}
+
+.locations-list ul > li {
+	padding: 15px 20px;
+	cursor: pointer;
+}
+
+.locations-list ul > li:hover {
+	background-color: #444;
+}
+
+.locations-list ul > li.highlighted {
+	background-color: #963;
+}
+
+.locations-list ul > li > span {
+	color: #eee;
+}
+
+/* navbar icon */
+.navbar-toggle {
+	position: relative;
+	margin: 0 15px;
+    padding: 9px 10px;
+}
+
+.navbar-toggle .icon-bar {
+	background-color: #88f;
+	display: block;
+    width: 22px;
+    height: 2px;
+    border-radius: 1px;
+    margin: 2px 0;
+}
+
+.navbar-toggle:hover .icon-bar {
+	background-color: #aaf;
+}
+
+/* mobile layout */
+@media screen and (max-width: 767px) {
+	.locations-list {
+		left: -400px;
+		position: fixed;
+	}
+}
+
+@media screen and (max-width: 450px) {
+	.locations-list {
+		width: 300px;
+		left: -300px;
+		position: fixed;
+	}
+}

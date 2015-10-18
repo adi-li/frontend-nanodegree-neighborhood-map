@@ -1,0 +1,34 @@
+<!doctype html>
+<html>
+<head>
+	<meta charset="utf-8"> 
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<title>Neighborhood Map</title>
+	<link rel="stylesheet" type="text/css" href="css/base.css">
+</head>
+<body>
+<div class="locations-list">
+	<h2>Hong Kong Locations</h2>
+	<input class="location-filter" type="search" placeholder="Filter location" data-bind="textInput: query">
+	<ul data-bind="foreach: filteredLocations">
+		<li data-bind="
+		click: $parent.showMarkerInfo,
+		css: { highlighted: $parent.highlightedMarker() == $data.marker }">
+			<span data-bind="text: $data.title"></span>
+		</li>
+	</ul>
+</div>
+<div class="map-view" data-bind="click: hideLocationsList">
+	<header>
+		<button class="btn navbar-toggle" data-bind="click: showLocationsList">
+	        <span class="icon-bar"></span>
+	        <span class="icon-bar"></span>
+	        <span class="icon-bar"></span>
+	        <span class="icon-bar"></span>
+	      </button>
+	</header>
+	<div class="map"></div>
+</div>
+<script data-main="js/main" src="bower_components/requirejs/require.js"></script>
+</body>
+</html>

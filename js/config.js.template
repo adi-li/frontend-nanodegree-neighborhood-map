@@ -1,0 +1,10 @@
+define([], function(){
+	'use strict';
+	return {
+		// You can get it from https://console.developers.google.com
+		googleAPIKey: 'Your Google API Key',
+
+		// You can get it from https://cse.google.com/cse
+		customSearchEngineID: 'Your Google Custom Search Engine ID'
+	};
+});
