@@ -69,15 +69,21 @@ define([
 					marker.setAnimation(google.maps.Animation.BOUNCE);
 
 					// Use Google Custom Search API to get the first image for the title
+					var errorMsg = location.title + '<br>No image available';
 					self.infowindow.setContent(location.title + '<br>Loading image...');
-					searcher.search(location.title).success(function(data){
-						if (data.items.length == 0) {
-							self.infowindow.setContent(location.title + '<br>No image available');
+
+					searcher.search(
+						location.title
+					).done(function(data){
+						// search success callback
+						if (data && data.items && data.items.length == 0) {
+							self.infowindow.setContent(errorMsg);
 						} else {
 							self.infowindow.setContent(location.title + '<br><img style="width:100%" src="' + data.items[0].link + '">')
 						}
-					}).error(function(){
-						self.infowindow.setContent(location.title + '<br>No image available');
+					}).fail(function(){
+						// search fail callback
+						self.infowindow.setContent(errorMsg);
 					});
 
 				} else {
@@ -104,7 +110,7 @@ define([
 			self.hideLocationsList();
 		};
 
-		// Show/hide list view
+		// Show list view
 		this.showLocationsList = function(data, event) {
 			event.cancelBubble = true;
 			if (event.stopPropagation) event.stopPropagation();
@@ -115,6 +121,7 @@ define([
 			};
 		};
 
+		// Hide list view
 		this.hideLocationsList = function(data, event) {
 			var $markersList = $('.locations-list:first');
 			var left = parseInt($markersList.css('left'));
