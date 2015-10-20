@@ -5,6 +5,7 @@ define([
 	'models/Location',
 	'libs/ImageSearcher',
 	'config',
+	'libs/detectmobilebrowser',
 	'goog!maps,3,other_params:sensor=false'
 ], function($, ko, locations, Location, ImageSearcher, config){
 	'use strict';
@@ -27,7 +28,7 @@ define([
 
 		// Copy the locations to observableArray
 		this.filteredLocations = ko.observableArray(locations.slice());
-		
+
 		// Filter locations when `query` is updated
 		this.query.subscribe(function(newQuery) {
 			newQuery = newQuery || '';
@@ -56,7 +57,7 @@ define([
 			// Set highlightedMarker to null if the infowindow is closed
 			self.highlightedMarker(null);
 		});
-		
+
 		// Highlighted Marker
 		this.highlightedMarker = ko.observable(null);
 
@@ -76,10 +77,14 @@ define([
 						location.title
 					).done(function(data){
 						// search success callback
-						if (data && data.items && data.items.length == 0) {
-							self.infowindow.setContent(errorMsg);
+						if (!data || !data.items || data.items.length == 0) {
+							if (data && data.error) {
+								self.infowindow.setContent(location.title + '<br>' + data.error.code + ': ' + data.error.message);
+							} else {
+								self.infowindow.setContent(errorMsg);
+							}
 						} else {
-							self.infowindow.setContent(location.title + '<br><img style="width:100%" src="' + data.items[0].link + '">')
+							self.infowindow.setContent(location.title + '<br><img class="infowindow-img" src="' + data.items[0].link + '">');
 						}
 					}).fail(function(){
 						// search fail callback
@@ -92,9 +97,12 @@ define([
 				}
 			});
 
-			// Show the infowindow if marker is highlighted
 			if (newMarker != null) {
+				// Show the infowindow if marker is highlighted
 				self.infowindow.open(self.map, newMarker);
+				// Center the marker in map
+				var latLng = newMarker.getPosition();
+				self.map.panTo(latLng);
 			} else {
 				self.infowindow.close();
 			}
@@ -110,37 +118,33 @@ define([
 			self.hideLocationsList();
 		};
 
+		// List view control
+		this.isLocationsListOpen = ko.observable(false);
+
 		// Show list view
-		this.showLocationsList = function(data, event) {
-			event.cancelBubble = true;
-			if (event.stopPropagation) event.stopPropagation();
-			var $markersList = $('.locations-list:first');
-			var left = parseInt($markersList.css('left'));
-			if (left != NaN) {
-				$markersList.animate({left: 0});
-			};
+		this.showLocationsList = function() {
+			this.isLocationsListOpen(true);
 		};
 
 		// Hide list view
-		this.hideLocationsList = function(data, event) {
-			var $markersList = $('.locations-list:first');
-			var left = parseInt($markersList.css('left'));
-			var width = parseInt($markersList.css('width'));
-			if (left != NaN) {
-				$markersList.animate({left: -width});
-			};
+		this.hideLocationsList = function() {
+			this.isLocationsListOpen(false);
 		};
 
 		// Final init view models
-		// Pin all markers to the map
+
+		// Get the suitable listener name
+		var event_name = $.browser.mobile ? 'mousedown' : 'click';
 		locations.forEach(function(location){
+			// Pin all markers to the map
 			location.marker.setMap(self.map);
-			location.marker.addListener('click', function(){
+			// Attach click listener when
+			location.marker.addListener(event_name, function(){
 				var marker = this;
 				self.showMarkerInfo(marker);
 			});
 		});
 	};
-	
+
 	return MapViewModel;
 });
